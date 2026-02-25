@@ -1,0 +1,36 @@
+{
+  "records": [
+    {
+      "date": "2026-02-21",
+      "price": 1110.0,
+      "change": -16.56,
+      "change_percent": -1.47,
+      "timestamp": "2026-02-21 09:00:00"
+    },
+    {
+      "date": "2026-02-22",
+      "price": 1110.0,
+      "change": -16.56,
+      "change_percent": -1.47,
+      "timestamp": "2026-02-22 09:00:00"
+    },
+    {
+      "date": "2026-02-23",
+      "price": 1110.0,
+      "change": -16.56,
+      "change_percent": -1.47,
+      "timestamp": "2026-02-23 09:00:00"
+    },
+    {
+      "date": "2026-02-24",
+      "price": 1110.0,
+      "change": 0.0,
+      "change_percent": 0.0,
+      "timestamp": "2026-02-24 22:00:00",
+      "note": "数据待更新"
+    }
+  ],
+  "unit": "CNY/克",
+  "source": "上海黄金期货 (沪金2603)",
+  "last_update": "2026-02-24 22:00:00"
+}

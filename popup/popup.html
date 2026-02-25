@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Gold Price Monitor</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Gold Price Monitor</h1>
+      <span class="refresh-btn" id="refreshBtn">🔄</span>
+    </header>
+
+    <div class="card current-price-card">
+      <div class="price-header">Current Price</div>
+      <div class="price-value" id="currentPrice">Loading...</div>
+      <div class="price-change" id="priceChange">--</div>
+      <div class="last-updated" id="lastUpdated">Updated: --</div>
+    </div>
+
+    <div class="card chart-card">
+      <div class="card-header">7-Day Trend</div>
+      <canvas id="trendChart" width="300" height="150"></canvas>
+      <div class="chart-stats" id="chartStats">
+        <span>High: --</span> <span>Low: --</span>
+      </div>
+    </div>
+
+    <div class="card history-card">
+      <div class="card-header">History</div>
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Price</th>
+            <th>Change</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+          <!-- Rows will be populated by JS -->
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="footer">
+      Source: Shanghai Gold Exchange (SHFE)
+    </div>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
