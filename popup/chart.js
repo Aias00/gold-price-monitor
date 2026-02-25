@@ -7,6 +7,7 @@ export class GoldChart {
     this.padding = { top: 20, right: 20, bottom: 30, left: 40 };
     this.chartWidth = this.width - this.padding.left - this.padding.right;
     this.chartHeight = this.height - this.padding.top - this.padding.bottom;
+    this.points = [];
     
     // Tooltip element
     this.tooltip = document.createElement('div');
@@ -25,32 +26,48 @@ export class GoldChart {
   }
 
   render(data) {
-    this.data = data;
+    const normalizedData = (data || [])
+      .map(point => ({ ...point, value: Number(point.value) }))
+      .filter(point => Number.isFinite(point.value));
+
+    this.data = normalizedData;
     this.ctx.clearRect(0, 0, this.width, this.height);
     
-    if (!data || data.length === 0) return;
+    if (normalizedData.length === 0) return;
 
     // Calculate min and max for scaling
-    const prices = data.map(d => d.value);
+    const prices = normalizedData.map(d => d.value);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
     const range = maxPrice - minPrice;
     
-    // Add some padding to the range
-    this.minY = minPrice - range * 0.1;
-    this.maxY = maxPrice + range * 0.1;
+    // Add Y padding. Keep a non-zero range so flat data still renders.
+    if (range === 0) {
+      const padding = Math.max(Math.abs(maxPrice) * 0.01, 1);
+      this.minY = minPrice - padding;
+      this.maxY = maxPrice + padding;
+    } else {
+      this.minY = minPrice - range * 0.1;
+      this.maxY = maxPrice + range * 0.1;
+    }
     this.rangeY = this.maxY - this.minY;
 
     this.drawAxes();
-    this.drawLine(data);
-    this.drawPoints(data);
+    this.drawLine(normalizedData);
+    this.drawPoints(normalizedData);
   }
 
   getY(value) {
+    if (!Number.isFinite(this.rangeY) || this.rangeY <= 0) {
+      return this.padding.top + this.chartHeight / 2;
+    }
     return this.height - this.padding.bottom - ((value - this.minY) / this.rangeY) * this.chartHeight;
   }
 
   getX(index, total) {
+    if (total <= 1) {
+      return this.padding.left + this.chartWidth / 2;
+    }
     return this.padding.left + (index / (total - 1)) * this.chartWidth;
   }
 
@@ -93,6 +110,8 @@ export class GoldChart {
     });
     
     this.ctx.stroke();
+
+    if (data.length < 2) return;
     
     // Fill area under line
     this.ctx.lineTo(this.getX(data.length - 1, data.length), this.height - this.padding.bottom);
@@ -129,9 +148,13 @@ export class GoldChart {
   }
 
   handleMouseMove(e) {
+    if (!this.points || this.points.length === 0) {
+      this.tooltip.style.display = 'none';
+      return;
+    }
+
     const rect = this.canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
     
     let closestPoint = null;
     let minDistance = 20; // Hit radius

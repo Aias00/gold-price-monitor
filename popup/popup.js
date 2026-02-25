@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const priceChangeEl = document.getElementById('priceChange');
   const lastUpdatedEl = document.getElementById('lastUpdated');
   const historyBody = document.getElementById('historyBody');
-  const chartStatsEl = document.getElementById('chartStats');
   
   let chartInstance = null;
 
@@ -23,12 +22,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       currentPriceEl.textContent = 'Loading...';
       priceChangeEl.textContent = '--';
       
-      // Fetch data
-      const url = chrome.runtime.getURL('data/gold_price_history.json');
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Failed to load data');
-      
-      const data = await response.json();
+      const response = await chrome.runtime.sendMessage({
+        type: 'GET_GOLD_PRICE_DATA',
+        forceRefresh: true
+      });
+
+      if (!response?.ok || !response.data) {
+        throw new Error(response?.error || 'Failed to load live data');
+      }
+
+      const data = response.data;
       renderData(data);
     } catch (error) {
       console.error('Error loading data:', error);
@@ -101,7 +104,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       const row = document.createElement('tr');
       const change = parseFloat(record.change);
       const changeColor = change > 0 ? '#10B981' : (change < 0 ? '#EF4444' : '#9CA3AF');
-      const changeSym = change > 0 ? '+' : '';
       
       row.innerHTML = `
         <td style="color:#9CA3AF">${formatDate(record.date)}</td>

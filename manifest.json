@@ -5,8 +5,11 @@
   "description": "实时监控国内投资金价，显示近一周价格走势",
   "permissions": [
     "storage",
-    "notifications",
     "alarms"
+  ],
+  "host_permissions": [
+    "https://push2.eastmoney.com/*",
+    "https://www.sge.com.cn/*"
   ],
   "background": {
     "service_worker": "background/background.js"
@@ -23,11 +26,5 @@
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  },
-  "web_accessible_resources": [
-    {
-      "resources": ["data/*"],
-      "matches": ["<all_urls>"]
-    }
-  ]
+  }
 }
